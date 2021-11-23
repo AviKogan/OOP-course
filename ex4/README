@@ -1,0 +1,128 @@
+avikog
+
+
+=============================
+=      File description     =
+=============================
+
+SimpleHashSet.java - implements the SimpleHashSet abstract class.
+ClosedHashSet.java - implements the ClosedHashSet class.
+OpenHashSet.java - implements the OpenHashSet class.
+LinkedListString.java - implements the LinkedListString class that wraps LinkList<string>.
+QuadraticProbing.java - implements the QuadraticProbing class that calculate clamped index based on the
+                        QuadraticProbing.
+SimpleSetPerformanceAnalyzer.java - implements the SimpleSetPerformanceAnalyzer class.
+CollectionFacadeSet.java - implements the CollectionFacadeSet class.
+
+
+=============================
+=          Design           =
+=============================
+According to the given API:
+The SimpleHashSet abstract class implements SimpleSet interface.
+The ClosedHashSet class extends the SimpleHashSet abstract class.
+The OpenHashSet class extends the SimpleHashSet abstract Class.
+The LinkedListString.java wraps LinkList<string>.
+The SimpleSetPerformanceAnalyzer.java has in composition relation an array of
+The CollectionFacadeSet class delegate the implemented methods to the wrapped collection methods.
+
+My change:
+I added the QuadraticProbing class, because in my opinion the use of its formula similar to the use in the
+Math library, because like the Math library every class that need to use it can use it by call to its static
+method that calculate the formula.
+
+
+=============================
+=  Implementation details   =
+=============================
+
+In SimpleHashSet i chose to define the _hashTable and _size as protected, because i chose to implement the
+hashTable type in both OpenHahSet and ClosedHAshSet as array of LinkListString, and i gave to the extending
+classes to control the _hashTable and as a result its size themself.
+
+I implemented the LinkedListString as wrapper because it allows to delegate the methods to the wrapped class.
+
+I marked deleted cell in ClosedHashSet (not relevant to OpenHahSet) as LinkListString of size 0, because
+naturally if some value added to empty cell the cell is null and a LinkListString created in the cell and the
+value added, than when deleting the value form the LinkListString its size is 0, unlike empty cell that no
+value assigned to him. So when adding element to the table it can be added to the first empty or deleted cell.
+
+I implemented the QuadraticProbing in separate class because it allows to other class that need to use its
+formula use it, and also it allows flexibility to replace in the SimpleHashSet the probing formula by using
+other probing class getIndex method that calculate the index in other way.
+
+In the SimpleSetPerformanceAnalyzer i created boolean array that checked when running the compares to check
+which files and which data structures to run in the compares, and its allow easily to remove  some data
+structures from the comparison by make there boolean variable false, same with the files. also in this class i
+created array that holds the words to check in the contain comparison for each data file, so its allows to add
+or remove words easily.
+
+In ClosedHashSet i limited the contain search number of attempts to capacity times attempts, according to the
+exercise file.
+
+In the CollectionFacadeSet class, i delegated the methods to the given collection same methods.
+
+=============================
+=    Answers to questions   =
+=============================
+
+Question - How you implemented OpenHashSet’s table
+Answer - i created an array of LinkListString, when i needed to add to some clamped cell i first checked
+the value not exist in the cell linkedList and if not i chained to the existed linkedList and if not i created
+ new linkedList and added the value to it, in removing i returned the remove from the linkList (delegation).
+ in resize i iterate over the cells in the array and re-hashed the values in non empty list to the new array.
+
+Question - Account, in separate, for OpenHashSet’s and ClosedHashSet’s bad results for data1.txt
+Answer - insertion of data1: OpenHashSet have the almost the same like LinkList as should be based on the
+                             implementation.
+                             ClosedHashSet got bad performance because the implementation requires skips
+                             in the table depending as the number of words entered, so not surprising it has
+                             the same result like linkedList
+
+         contain "hi": OpenHashSet get very good performance because ot mapping the not exist hashCode to
+                       other empty cell, so the contain and adding is fast.
+                       ClosedHashSet has less good performance because the insertion of the words in data1
+                       scattered throughout the table so it may collided with the QuadraticProbing of "hi"
+
+         contain "-13170890158": OpenHashSet like in the insertion it take the same time like linkList because
+                                 it mapped to the only linkedList in the table.
+                                 ClosedHashSet it takes O(number of inserted word) because it will iterate
+                                 thorough all the words before it will get null or finish the search
+                                 attempts and stop.
+
+Question -  Summarize the strengths and weaknesses of each of the data structures as reflected by the results.
+            Which would you use for which purposes?
+Answer -    OpenHashSet - weakness in insertion and find when inserting a lot of values with the same hashCode
+                          strengths better than linkList with insertion and find when not all the value has
+                                    the same hashCode.
+            ClosedHashSet - weakness in insertion and find when inserting a lot of values with the same
+                                     hashCode.
+                            strengths better than linkList with insertion and find when not all the value has
+                                      the same hashCod
+            LinkList - weakness in insertion and find compared to the other data structures.
+                       strengths no strengths compared to the other data structures.
+            TreeSet - weakness search of non-exist value with different hashCode than existed value on the
+                               data structure compared to hash data structures.
+                      strengths have good performance in insertion and find compared to the other data
+                                structures not depend on the hashCode of the value.
+            HashSet - weakness non compared to the other data structures.
+                      strengths best performance also in insertion and find.
+
+            in all the parameters HashSet was better or equal to the other data structures, so i will choose
+            it for any purposes that demand insertion and than find operation on the data.
+
+
+Question - How did your two implementations compare between themselves?
+Answer - both insertion and contain of data files in OpenHashSet was better, the contain was better in a big
+         difference.
+
+Question - How did your implementations compare to Java’s built in HashSet?
+Answer - The java built in HashSet was better on insertion compared to both implementations,
+         The OpenHashSet was better in the contain of 'hi' with data2 that has a different hashCode from the
+         other words in the file.
+
+Question - Did you find java’s HashSet performance on data1.txt surprising? Can you explain it?
+Answer - I was surprised that the contain of "-13170890158" was so fast although it has the same hash code
+         like the other words in data1. i think that java HashSet combine more actions when adding data, maybe
+          use more than one hashTable (map in each cell new hash table) or other method that allows fast
+          insertion like the performance and also fast find.

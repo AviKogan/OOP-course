@@ -1,0 +1,72 @@
+avikog
+
+=============================
+=      File description     =
+=============================
+SpaceShip.java - implements the SpaceShip class, An abstract class that represents a non-type spaceShip.
+SpaceShipFactory.java - implements the SpaceShipFactory class,  create all the spaceship objects according
+                        to the command line arguments
+Human.java - implements the Human class.
+Runner.java - implements the Runner class.
+Basher.java - implements the Basher class.
+Aggressive.java - implements the Aggressive class.
+Drunkard.java - implements the Drunkard class.
+Special.java - implements the Special class, this ship has special fire that can fire a number of defined
+shots, it's a combination of runner, aggressive and basher.
+
+=============================
+=          Design           =
+=============================
+
+SpaceShip is an abstract class that has composition relation to SpaceShipPhysics class and SpaceWars class,
+To SpaceShipPhysics - has data member "_spaceShipPhysics" that is instance of SpaceShipPhysics,
+To SpaceWars - "ships" is a data member in SpaceWars class - that is array of instances of SpaceShip.
+
+I implemented SpaceShip as abstract class because SpaceShip is not a concrete spaceship type, so there is no
+reason to make instance of it, I chose not to implement it as interface, because not all the spaceships do the
+same actions that already provided as part of the SpaceShip API, actions like transport, fire and shield.
+
+Human extends SpaceShip class, implementation of Spaceship of type Human.
+Runner extends SpaceShip class, implementation of Spaceship of type Runner.
+Basher extends SpaceShip class, implementation of Spaceship of type Basher.
+Aggressive extends SpaceShip class, implementation of Spaceship of type Aggressive.
+Drunkard extends SpaceShip class, implementation of Spaceship of type Drunkard.
+Special extends SpaceShip class, implementation of Spaceship of type Special.
+
+=============================
+=  Implementation details   =
+=============================
+
+In the abstract class SpaceShip I added 5 data members, all of them in private to control the changes done on
+them.
+I considered to use interfaces for each of the actions SpaceShip can do (fire, transport and shield),
+but because there was methods signatures for each action in the SpaceShip provided API it became unnecessary.
+I implemented the collidedWithAnotherShip method as abstract because ships that not use shield don't need to
+check the field status, and I implemented two methods for collisions in SpaceShip, one for ships with shield
+and one for shield-less ships, to avoid code duplication. The same I did with the gotHit method, This allows
+flexibility that is reflected in the Special SpaceShip type, that it's gotHit and collidedWithAnotherShip
+act differently.
+I implemented the fire, teleport and shieldOn methods because they act the same for every inherited type that
+do that action, if there need to be any change it can be override by the relevant type, like in the way the
+Special ship fires. The implementation of the actions methods allow to inherited types that don't need some
+action (for example Aggressive don't use teleport) to not implement them and just call the action they need,
+so it give extensibility to add more actions in the same way.
+All the methods and constants I added to the SpaceShip class that defined protected relevant for the inherited
+ships type, and each one for number of types.
+
+Drunkard - This ship can fire, activate it's shield and teleport, but it's doing all it's actions randomly and
+           independently to the other action.
+Special - This spaceship attempts to run away from the closest ship. It will always accelerate, and will
+          constantly turn away from the closest ship similar to the Runner.
+          Similar to the Aggressive - If its angle to the nearest ship is less than 0.21 radians, it will try
+          to fire to defense itself, instead of regular fire it has the specialFire.
+          Similar to the Basher if it gets within a distance of 0.19 units (inclusive) from another ship,
+          it will attempt to turn on its shields.
+          Not like all the other ships the special ships can't defend against shots, so each shot reduce its
+          life.
+
+=============================
+=    Answers to questions   =
+=============================
+
+---

@@ -1,0 +1,35 @@
+avikog
+
+
+=============================
+=      File description     =
+=============================
+Book.java - implements the Book class.
+Patron.java - implements the Patron class.
+Library.jave - contains the Library implementation, using the implementations of Book and Library.
+
+=============================
+=          Design           =
+=============================
+According to the given API:
+the Patron class extends the Book class.
+the Library class extends the Patron Class,
+
+=============================
+=  Implementation details   =
+=============================
+I implemented with the Library class two array, one holds the registered patrons (instances of Patron) and one
+the books (instances of Book) added to the library.
+I chose this design because it allows naturally to give each book or patron his index in the array as his ID,
+and also manage the patrons/books in easy eay. Each new book/patron assigned to the first available index in
+his array, so to make the searching in both arrays efficient i used two static private variables
+(currentBookCapacity, currentPatronsCapacity)  that represents the current capacity in each array and
+therefore also each one represent the first available index in the array, by using both variables there is no
+need to search in the all array every time search is needed, and each gives the index for new patron/book if
+needed.
+
+=============================
+=    Answers to questions   =
+=============================
+
+---

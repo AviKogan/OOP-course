@@ -1,0 +1,128 @@
+avikog
+
+
+=============================
+=      File description     =
+=============================
+
+main package: filesprocessing - contain all the necessary classes and sub-packages for the DirectoryProcess.
+DirectoryProcess.java - abstract class implement the main function of the DirectoryProcess.
+Section.java - class Represent a section from the CommandFile.
+SectionsProcessor.java - abstract class used to process the CommandsFile with its one public static method.
+Printable.java - interface implemented by package classes that needed to be printed (Warning, Section).
+ sub-package Orders: contain (binds) all the classes needed to implement the orders of DirectoryProcess.
+    Order.java - abstract class all the order types inherit from.
+    OrderFactory.java - abstract class, according to Factory design, creates objects of the type Order
+    Abs.java - class implement the abs order type.
+    Size.java - class implement the size order type.
+    Type.java - class implement the 'type' order type.
+    SizeComparator.java - class implement Comparator interface for Order of type Size.
+    TypeComparator.java - class implement Comparator interface for Order of type 'type'.
+ sub-package Filters: contain (binds) all the classes needed to implement the filters of DirectoryProcess.
+    Filter.java - abstract class all the filter types inherit from.
+    FilterFactory.java - abstract class, according to Factory design, creates objects of the type Filter.
+    All.java - class implement the all filter type.
+    Between.java - class implement the between filter type.
+    Greater_than.java - class implement the greater_than filter type.
+    Smaller_than.java - class implement the smaller_than filter type.
+    StringFilters.java - abstract class inherit from Filter class, for filters filtering by string value.
+     Prefix.java - class inherit from StringFilters implement the prefix filter type.
+     Suffix.java - class inherit from StringFilters implement the suffix filter type.
+     Contains.java - class inherit from StringFilters implement the contains filter type.
+     FileName.java - class inherit from StringFilters implement the file filter type.
+    FileStateFilters.java - abstract class inherit from Filter class, for filters filtering by file state.
+     Executable.java - class inherit from FileStateFilters implement the executable filter type.
+     Writable.java - class inherit from FileStateFilters implement the writable filter type.
+     Hidden.java - class inherit from FileStateFilters implement the hidden filter type.
+  sub-package exceptions: contain (binds) all the classes needed to implement the Error of type 1 and 2 of
+                          DirectoryProcess.
+     ErrorsException.java - abstract class, all the exceptions of type 2 inherit from it.
+     ErrorBadFormatException.java - implement the error thrown if there is bad format in the commands file.
+     ErrorBadSubSectionNameException.java - implement the error thrown if sub-section name is invalid.
+     ErrorCommandsFileNotExistException.java - implement the error thrown if the Command file not exist.
+     ErrorDirectoryNotExistException.java - implement the error thrown if the directory not exist.
+     ErrorUsageException - implement the error thrown in wrong usage.
+     WarningsExceptions.java - abstract class, all the exceptions of type 1 inherit from it.
+     WarningFilterException.java - implement the exception thrown if there is invalid filter type.
+     WarningOrderException.java - implement the exception thrown if there is invalid order type.
+
+=============================
+=          Design           =
+=============================
+According to the given API:
+The DirectoryProcess abstract is under the package of fileprocessing, and implements the main function, public
+modifier.
+
+My design:
+Printable - is interface used to print the output of the sections process, implemented by Warning and Section
+            classes, package modifier.
+Warning class - class that represent Warning occurred in some line of the commands file, implementing the
+                Printable interface, package modifier.
+Section class - class that represent Section from the Command file, has composition relation to the Order and
+                Filter classes, and delegate its filter, sort function to them.
+SectionsProcessor.java - abstract class, used as factory to process the command file and return list of
+                         printable object of type Section and maybe Warning.
+
+I separated the order types to classes bind under the Orders package, all the classes have package modifier
+except the OrderFactory and the Order class.
+The OrderFactory follows the single choice principle.
+
+I created two comparators, the SizeComparator and TypeComparator, both are followed the Singleton principle
+in the Size and Type that has composition respectively, and implement the needed comparator, the comparators
+used to sent to the Order sorter method.
+
+I separated the filter types to classes bind under the Filters package, all the filter types have package
+modifier except the FilterFactory and the Filter class.
+The FilterFactory follows the single choice principle.
+
+I created StringFilters abstract class the inherit from Filter and all the filter off types prefix, suffix,
+contains and file inherit from it, because all of them are related as that they filter by string and have the
+same format in the command file.
+
+I created FileStateFilters abstract class the inherit from Filter and all the filter off types executable,
+writable, hidden inherit from it, because all of them are related as that they filter by the file state
+and have the same format in the command file.
+
+I consider to create SizeFilter abstract class but because between is different then greater_than and
+smaller_than in its format the name can confuse because ot will not inherit from it.
+
+I separated the Error of both types to classes bind under the exception package, The abstract class
+ErrorException bind all the errors of type 1 under it, all the inherit classes not abstract, The abstract
+class WarningsExceptions bind all the errors of type 1 under it, all the inherit classes not abstract. the
+modifier of all classes are public to allow them be called.
+
+=============================
+=  Implementation details   =
+=============================
+
+I returned from the SectionProcessor loadSections a linkedList with Printable object, in that way i could
+process the sections in SectionProcessor class and return to the DirectoryProcessor list that need to printed
+in the given order.
+
+The Section class delegated its filter and sort methods to the composed Filter and Order objects respectively.
+
+The ErrorExceptions print to the System.err the relevant error when they created and need just to be caught.
+
+In the Order classes delegated the sort method to the Order 'sorter' method and give to it the
+suitable comparator.
+
+The Abs holds comparator of Comparator interface with package modifier to allow the other package comparators
+to use it as there default comparator in equal comparison result.
+
+
+=============================
+=    Answers to questions   =
+=============================
+
+Question - How did you sort your matched files?
+Answer - as i described above i used a sorter method in the Order class all the sub classes delegated to him
+         with the relevant comparator, than the sorter delegated to quickSort implementation sorter that use
+         the given comparator to sort the given Arraylist.
+
+Question - Did you used a data structure for this purpose?
+Answer - I used ArrayList for the quick adding of files when filtering and than trim to size, than in the
+         quick sort it allows O(1) in the random access for the sorting.
+         i considered to use a treeSet to store the files with given comparator But it would not meet the
+         definitions of the exercise to implement a sort, because the tree will sort it self.
+
+

@@ -1,0 +1,102 @@
+avikog
+
+
+=============================
+=      File description     =
+=============================
+
+Part A:
+Storage.java - abstract class represent Storage, implement default methods.
+Locker.java - implements the Locker class.
+LongTermStorage.java - implements the LongTermStorage class.
+Spaceship.java - implements USS DISCOVERY Spaceship.
+
+LockerTest.java - test class for the Locker class.
+LongTermTest.java - test class for the LongTermStorage class.
+SpaceshipTest.java - test class for Spaceship class.
+SpaceshipDepositoryTest.java - test suite class running LockerTest.java, LongTermTest.java and
+                                SpaceshipTest.java.
+
+Part B:
+BoopingSite.java - implements the Booping class with the required get method.
+HotelsByProximityComparator.java - implement comparator based on Proximity and POI number.
+HotelsInCityByRatingComparator.java - implement comparator based on StarRating and PropertyName.
+BoopingSiteTest.java - test class for the BoopingSite class.
+
+
+=============================
+=          Design           =
+=============================
+
+For part A:
+Because both LongTermStorage and Locker are type of Storage i created an abstract class called Storage, and
+both LongTermStorage and Locker extends Storage because both of them “is a” type of storage. it gives
+extensibility to add more Storages types in the Spaceship with other inventory management conditions.
+
+Spaceship has composition relation with both LongTermStorage and Locker as given in the instructions.
+
+For part B:
+
+for the required get methods i created 2 comparators, both used in delegation relation in the BoopingSite
+class.
+
+=============================
+=  Implementation details   =
+=============================
+
+For part A:
+Storage class has the inventory data member modified private as all the other class members to give minimal
+API. Also the Storage class implements all the shared method for storage type in a basic Storage
+implementation, if some change needed or extents to the method implementation (like in addItem method in
+Locker) it can be override.
+
+In the Locker i implemented the constrains in HashMap<String, LinkedHashMap<String, Item>>, because it gives
+for each type to be mapped to LinkedHashMap with all the contradicted type he has, and every time item added to
+it gives access to the list of those contradicted items in O(1).
+
+In the Locker i implemented the removeItem method that when remove 0 times item (exist or not in the
+inventory) it will return SUCCESS because in my opinion there is no problem to remove 0% of capacity.
+Also in Locker removeItem method - if value of key become 0 the key removed from the locker inventory -
+because if it exist 0 times in my opinion it the same like it not added to the map in the beginning.
+
+LTS - addItem - add negative number - return -1, adding negative number should not remove items, so in my
+opinion adding negative number should cause error, so default scenario error printed.
+
+For part B:
+
+The comparator HotelsByProximityComparator used both for the getHotelsByProximity and
+getHotelsInCityByProximity methods, because both make the same sorting but maybe on other list of hotels.
+Rhe comparator HotelsInCityByRatingComparator used for getHotelsInCityByRating methods.
+
+Also for getHotelsByProximity and getHotelsInCityByProximity methods i implemented a private method -
+sortListByProximity, both use to make the sorting.
+
+This implementation allows extensibility to ass more sorting depend on other comparators if needed easily.
+
+In the BoopingSite i chose to store the dataSet expect in the array as it returned from the
+HotelDataset.getHotels also in HashMap<String, LinkedList<Hotel>> that map between city name to linkedList
+with the Hotel instances in this city, i chose HashMap because it gives O(1) to get the required city hotels
+list, and a linked list because it support Collection.sort for the sorting, and also support add new item in
+O(1) what happened in the initialize and after then no more items added or removed to the dataSet.
+
+=============================
+=    Answers to questions   =
+=============================
+
+For part A:
+Question: About LongTermStorage How did you choose to Store to store the information, How it different from
+          Locker.java?
+Answer: Both LongTermStorage and Locker inventory stored in HashMap inherited from Storage from String to
+        Integer because it gives access to change inventory key in O(1) what need to be dome each time item
+        added or removed.
+
+For part B:
+Question: how you choose the dataset for each test?
+
+Answer: I chose to sort the dataSet in the array as it returned form HotelDataset.getHotels, because in each
+        test i initialized the dataSet, so to save time i preferred not to copy it to other dataStructure like
+        i did in the BoopingSite.
+
+
+
+
